@@ -1,0 +1,26 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-c",
+      "-Wall",
+      "-Iinclude",
+      "-framework",
+      "CoreVideo",
+      "-framework",
+      "IOKit",
+      "-framework",
+      "Cocoa",
+      "-framework",
+      "GLUT",
+      "-framework",
+      "OpenGL",
+      "-o",
+      "game",
+      "main.c"
+    ],
+    "directory": "/Users/saens/gh-repos/clang-game",
+    "file": "/Users/saens/gh-repos/clang-game/main.c",
+    "output": "/Users/saens/gh-repos/clang-game/game"
+  }
+]

@@ -9,6 +9,8 @@ typedef struct Player {
   Vector2 position;
   Vector2 size;
   Vector2 velocity;
+  Texture2D player_texture;
+  float scale;
 } Player;
 
 typedef struct Ball {
@@ -28,6 +30,8 @@ struct Player player;
 Rectangle player_rec;
 Vector2 pj_direction = {0.0f, 0.0f};
 const float PLAYER_SPEED = 300.0f;
+
+// -- Textures --
 
 struct Ball ball;
 Vector2 ball_direction = {0.0f, -1.0f};
@@ -90,16 +94,24 @@ int main(void) {
       draw_lines();
     }
 
-    // draw player
+    // draw player 
 
-    player_rec = (Rectangle){
-      player.position.x,
-      player.position.y,
-      player.size.x,
-      player.size.y,
-    };
+    // rectangle
+    // player_rec = (Rectangle){
+    //   player.position.x,
+    //   player.position.y,
+    //   player.size.x,
+    //   player.size.y,
+    // };
 
-    DrawRectangleRec(player_rec, WHITE);
+    // DrawRectangleRec(player_rec, WHITE);
+
+    // draw textured player
+    Vector2 current_position = {player.position.x, player.position.y};
+    DrawTextureEx(player.player_texture, current_position, 0.0f, player.scale, WHITE);
+
+    // xD
+    // player.scale += 0.01f;
 
     // draw ball
     DrawCircle(
@@ -111,7 +123,8 @@ int main(void) {
 
     EndDrawing();
   }
-
+  // unload to avoid memory leaks
+  UnloadTexture(player.player_texture);
   CloseWindow();
 
   return 0;
@@ -128,15 +141,24 @@ void setup_game(void) {
   Vector2 ball_direction = {0.0f, -1.0f};
   // player
   strcpy(player.name, "Pedro");
-  player.size = (Vector2){200.0f, 50.0f};
+  // size for rectangle
+  // player.size = (Vector2){200.0f, 50.0f};
+
+  // texture
+  player.player_texture = LoadTexture("resources/komo.png");
+  // texture scaling
+  player.scale = 4.0f;
+
+  player.size = (Vector2){player.player_texture.width, player.player_texture.height};
   float player_center_x = (WIDTH * 0.5f) - (player.size.x * 0.5f);
   float player_center_y = (HEIGHT * 0.5f) - (player.size.y * 0.5f);
+  // set player start position
   player.position = (Vector2){player_center_x, player_center_y};
   
-  // ball
-  ball.position = (Vector2){WIDTH * 0.5f, 50.0f};
   ball.radius = 16;
   ball.color = RED;
+  // set ball start position
+  ball.position = (Vector2){WIDTH * 0.5f, 50.0f};
 }
 
 /*
@@ -174,20 +196,32 @@ void player_input(void) {
   printf("Current direction: (%.2f, %.2f)\n", pj_direction.x, pj_direction.y);
 }
 
-void clamp_player(struct Player *player, int WIDTH, int HEIGHT) {
+void clamp_player(Player *player, int WIDTH, int HEIGHT) {
+  // for rectangle
+  // if (player->position.x <= 0)
+  //   player->position.x = 0;
+  // else if ((player->position.x + player->size.x) >= WIDTH)
+  //   player->position.x = WIDTH - player->size.x;
+
+  // if (player->position.y <= 0)
+  //   player->position.y = 0;
+  // else if ((player->position.y + player->size.y) >= HEIGHT)
+  //   player->position.y = HEIGHT - player->size.y;
+  float scaled_width = player->player_texture.width * player->scale;
+  float scaled_height = player->player_texture.height * player->scale;
 
   if (player->position.x <= 0)
     player->position.x = 0;
-  else if ((player->position.x + player->size.x) >= WIDTH)
-    player->position.x = WIDTH - player->size.x;
+  else if ((player->position.x + scaled_width) >= WIDTH)
+    player->position.x = WIDTH - scaled_width;
 
   if (player->position.y <= 0)
     player->position.y = 0;
-  else if ((player->position.y + player->size.y) >= HEIGHT)
-    player->position.y = HEIGHT - player->size.y;
+  else if ((player->position.y + scaled_height) >= HEIGHT)
+    player->position.y = HEIGHT - scaled_height;
 }
 
-void clamp_ball(struct Ball *ball, int WIDTH, int HEIGHT) {
+void clamp_ball(Ball *ball, int WIDTH, int HEIGHT) {
 
   if (ball->position.x <= 0)
     ball->position.x = 0;
@@ -222,12 +256,12 @@ void update_position(Vector2 *position, Vector2 *velocity, float dt) {
   position->y += velocity->y * dt;
 }
 
-void move_ball(struct Ball *ball, float dt, int WIDTH, int HEIGHT) {
+void move_ball(Ball *ball, float dt, int WIDTH, int HEIGHT) {
   update_position(&ball->position, &ball->velocity, dt);
   clamp_ball(ball, WIDTH, HEIGHT);
 }
 
-void move_player(struct Player *player, float dt, int WIDTH, int HEIGHT) {
+void move_player(Player *player, float dt, int WIDTH, int HEIGHT) {
   update_position(&player->position, &player->velocity, dt);
   clamp_player(player, WIDTH, HEIGHT);
 }
