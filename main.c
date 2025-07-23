@@ -31,20 +31,20 @@ Rectangle player_rec;
 Vector2 pj_direction = {0.0f, 0.0f};
 const float PLAYER_SPEED = 300.0f;
 
-// -- Textures --
 
 struct Ball ball;
 Vector2 ball_direction = {0.0f, -1.0f};
 const float BALL_SPEED = 250.0f;
-
 
 //--- prototypes --- //
 
 void setup_game(void);
 void player_input(void);
 void update_position(Vector2 *position, Vector2 *velocity, float dt);
+// --- old
 // void move_player(struct Player *player, float dt);
 // void move_ball(struct Ball *ball, float dt);
+// --- old
 void clamp_player(struct Player *player, int WIDTH, int HEIGHT);
 void clamp_ball(struct Ball *player, int WIDTH, int HEIGHT);
 void move_player(struct Player *player, float dt, int WIDTH, int HEIGHT);
@@ -64,7 +64,7 @@ int main(void) {
   // game loop //
   while (!WindowShouldClose()) {
     
-    DrawFPS(WIDTH / 4, HEIGHT / 4);
+    DrawFPS(WIDTH * 0.025f, HEIGHT * 0.025f);
     float dt = GetFrameTime();
 
     // update state //
@@ -83,7 +83,6 @@ int main(void) {
     move_player(&player, dt, WIDTH, HEIGHT);
     move_ball(&ball, dt, WIDTH, HEIGHT);
     printf("Player position: (%.2f, %.2f)\n", player.position.x, player.position.y);
-
     
     // render //
     BeginDrawing();
@@ -108,10 +107,19 @@ int main(void) {
 
     // draw textured player
     Vector2 current_position = {player.position.x, player.position.y};
-    DrawTextureEx(player.player_texture, current_position, 0.0f, player.scale, WHITE);
+    DrawTextureEx(player.player_texture,
+       current_position,
+        0.0f,
+         player.scale,
+          WHITE);
 
     // xD
-    // player.scale += 0.01f;
+    player.scale += 0.05f;
+    if (player.scale >= 20.0f) {
+      player.scale = 1.0f;
+      ball.radius += 10.0f;
+    }
+    
 
     // draw ball
     DrawCircle(
@@ -131,7 +139,8 @@ int main(void) {
 }
 
 void setup_game(void) {
-  InitWindow(WIDTH, HEIGHT, "New game");
+  char titulo[] = "League of Legends 2";
+  InitWindow(WIDTH, HEIGHT, titulo);
   SetConfigFlags(FLAG_VSYNC_HINT);
   SetTargetFPS(60);
   
@@ -233,23 +242,6 @@ void clamp_ball(Ball *ball, int WIDTH, int HEIGHT) {
     ball->position.y = HEIGHT - ball->radius;
 }
 
-/*
-void move_player(struct Player *player, float dt) {
-  player->position.x += pj_direction.x * PLAYER_SPEED * dt;
-  player->position.y += pj_direction.y * PLAYER_SPEED * dt;
-  clamp_player(player, WIDTH, HEIGHT);
-  printf("Player position: (%.2f, %.2f)\n", player->position.x, player->position.y);
-}
-*/
-
-/*
-void move_ball(struct Ball *ball, float dt) {
-  ball->position.x += ball_direction.x * BALL_SPEED * dt;
-  ball->position.y += ball_direction.y * BALL_SPEED * dt;
-  clamp_ball(ball, WIDTH, HEIGHT);
-  printf("Ball position: (%.2f, %.2f)\n", ball->position.x, ball->position.y);
-}
-*/
 
 void update_position(Vector2 *position, Vector2 *velocity, float dt) {
   position->x += velocity->x * dt;
@@ -273,6 +265,26 @@ void draw_lines(void) {
         4.0f,
         BLACK);
 }
+
+/*
+void move_player(struct Player *player, float dt) {
+  player->position.x += pj_direction.x * PLAYER_SPEED * dt;
+  player->position.y += pj_direction.y * PLAYER_SPEED * dt;
+  clamp_player(player, WIDTH, HEIGHT);
+  printf("Player position: (%.2f, %.2f)\n", player->position.x, player->position.y);
+}
+*/
+
+// ----- old -----
+
+/*
+void move_ball(struct Ball *ball, float dt) {
+  ball->position.x += ball_direction.x * BALL_SPEED * dt;
+  ball->position.y += ball_direction.y * BALL_SPEED * dt;
+  clamp_ball(ball, WIDTH, HEIGHT);
+  printf("Ball position: (%.2f, %.2f)\n", ball->position.x, ball->position.y);
+}
+*/
 
 // Math
 
