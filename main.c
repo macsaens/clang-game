@@ -26,7 +26,7 @@ bool show_lines = false;
 
 // const int CANVAS = 150;
 
-struct Player player;
+Player player;
 Rectangle player_rec;
 Vector2 pj_direction = {0.0f, 0.0f};
 const float PLAYER_SPEED = 300.0f;
@@ -45,10 +45,10 @@ void update_position(Vector2 *position, Vector2 *velocity, float dt);
 // void move_player(struct Player *player, float dt);
 // void move_ball(struct Ball *ball, float dt);
 // --- old
-void clamp_player(struct Player *player, int WIDTH, int HEIGHT);
-void clamp_ball(struct Ball *player, int WIDTH, int HEIGHT);
-void move_player(struct Player *player, float dt, int WIDTH, int HEIGHT);
-void move_ball(struct Ball *ball, float dt, int WIDTH, int HEIGHT);
+void clamp_player(Player *player, int WIDTH, int HEIGHT);
+void clamp_ball(Ball *player, int WIDTH, int HEIGHT);
+void move_player(Player *player, float dt, int WIDTH, int HEIGHT);
+void move_ball(Ball *ball, float dt, int WIDTH, int HEIGHT);
 // float vec_magnitude(Vector2 vec);
 float vec_magnitude(Vector2 vec);
 Vector2 vec_normalize(Vector2 vec);
