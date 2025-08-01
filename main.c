@@ -93,8 +93,7 @@ int main(void) {
       draw_lines();
     }
 
-    // draw player 
-
+    // cuadrado asimetrico
     // rectangle
     // player_rec = (Rectangle){
     //   player.position.x,
@@ -108,15 +107,26 @@ int main(void) {
     // draw textured player
     Vector2 current_position = {player.position.x, player.position.y};
     DrawTextureEx(player.player_texture,
-       current_position,
+        current_position,
         0.0f,
-         player.scale,
-          WHITE);
+        player.scale,
+        WHITE);
 
     // xD
     player.scale += 0.05f;
+    ball.radius += 0.05f;
     if (player.scale >= 20.0f) {
       player.scale = 1.0f;
+
+   // mandar a funcion para resetear posicion y direccion
+   // -v--v--v--v--v--v--v--v--v--v--v--v--v--v--v--v--v--v--v--v-
+      float player_center_x = (WIDTH * 0.5f) - (player.size.x * 0.5f);
+      float player_center_y = (HEIGHT * 0.5f) - (player.size.y * 0.5f);
+      // set player start position
+      player.position = (Vector2){player_center_x, player_center_y};
+   // ^--^--^--^--^--^--^--^--^--^--^--^--^--^--^--^--^--^--^--^--
+
+      //ball.radius += 70.0f;
       ball.radius += 10.0f;
     }
     
@@ -159,6 +169,7 @@ void setup_game(void) {
   player.scale = 4.0f;
 
   player.size = (Vector2){player.player_texture.width, player.player_texture.height};
+  // center of screen
   float player_center_x = (WIDTH * 0.5f) - (player.size.x * 0.5f);
   float player_center_y = (HEIGHT * 0.5f) - (player.size.y * 0.5f);
   // set player start position
